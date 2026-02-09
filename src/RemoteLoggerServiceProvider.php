@@ -11,6 +11,11 @@ class RemoteLoggerServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/config/remote-logger.php', 'remote-logger'
         );
+
+        $this->app['config']->set('logging.channels.remote', array_merge(
+            ['driver' => 'remote'],
+            $this->app['config']->get('logging.channels.remote', []),
+        ));
     }
 
     public function boot(): void
