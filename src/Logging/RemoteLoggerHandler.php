@@ -15,6 +15,8 @@ class RemoteLoggerHandler extends AbstractProcessingHandler
     protected ?string $apiKey;
     protected bool $async;
     protected ?string $queue;
+    protected bool $verifySsl;
+    protected int $timeout;
 
     public function __construct(array $config)
     {
@@ -27,6 +29,8 @@ class RemoteLoggerHandler extends AbstractProcessingHandler
         $this->apiKey = $config['api_key'] ?? config('remote-logger.api_key');
         $this->async = $config['async'] ?? config('remote-logger.async', true);
         $this->queue = $config['queue'] ?? config('remote-logger.queue');
+        $this->verifySsl = $config['verify_ssl'] ?? config('remote-logger.verify_ssl', true);
+        $this->timeout = $config['timeout'] ?? config('remote-logger.timeout', 5);
     }
 
     protected function write(LogRecord $record): void
@@ -43,7 +47,7 @@ class RemoteLoggerHandler extends AbstractProcessingHandler
             ];
 
             if ($this->async) {
-                $job = SendLogToRemoteServer::dispatch($this->url, $data, $this->apiKey);
+                $job = SendLogToRemoteServer::dispatch($this->url, $data, $this->apiKey, $this->verifySsl, $this->timeout);
 
                 if ($this->queue) {
                     $job->onQueue($this->queue);
@@ -59,6 +63,10 @@ class RemoteLoggerHandler extends AbstractProcessingHandler
     protected function sendSync(array $data): void
     {
         $request = Http::timeout(5);
+
+        if (! $this->verifySsl) {
+            $request = $request->withoutVerifying();
+        }
 
         if ($this->apiKey) {
             $request = $request->withToken($this->apiKey);

@@ -65,4 +65,25 @@ return [
     |
     */
     'queue' => env('REMOTE_LOGGER_QUEUE', null),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Verify SSL
+    |--------------------------------------------------------------------------
+    |
+    | When false, SSL certificate verification will be disabled.
+    | Useful for local development with self-signed certificates.
+    |
+    */
+    'verify_ssl' => env('REMOTE_LOGGER_VERIFY_SSL', true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Request Timeout
+    |--------------------------------------------------------------------------
+    |
+    | The HTTP request timeout in seconds.
+    |
+    */
+    'timeout' => env('REMOTE_LOGGER_TIMEOUT', 5),
 ];
