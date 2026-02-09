@@ -23,11 +23,12 @@ class SendLogToRemoteServer implements ShouldQueue
         protected array $data,
         protected ?string $apiKey = null,
         protected bool $verifySsl = true,
+        protected int $httpTimeout = 5,
     ) {}
 
     public function handle(): void
     {
-        $request = Http::timeout(10);
+        $request = Http::timeout($this->httpTimeout);
 
         if (! $this->verifySsl) {
             $request = $request->withoutVerifying();

@@ -62,7 +62,7 @@ class RemoteLoggerHandler extends AbstractProcessingHandler
 
     protected function sendSync(array $data): void
     {
-        $request = Http::timeout(5);
+        $request = Http::timeout($this->timeout);
 
         if (! $this->verifySsl) {
             $request = $request->withoutVerifying();
