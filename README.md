@@ -4,7 +4,7 @@ Send your Laravel application logs to a centralized remote logging server.
 
 ## Features
 
-- Easy installation and configuration
+- Zero config — just install, set env vars, and go
 - Bearer token authentication
 - Asynchronous logging (queued) to avoid slowing down requests
 - Automatic retry on failure (3 attempts with backoff)
@@ -42,31 +42,13 @@ All available environment variables:
 | `REMOTE_LOGGER_VERIFY_SSL` | `true` | Verify SSL certificates |
 | `REMOTE_LOGGER_TIMEOUT` | `5` | HTTP request timeout in seconds |
 
-### 2. Add the Remote Channel
-
-In `config/logging.php`:
-
-```php
-'channels' => [
-
-    'remote' => [
-        'driver' => 'remote',
-    ],
-
-    // Or stack with a local channel as backup
-    'stack' => [
-        'driver' => 'stack',
-        'channels' => ['remote', 'daily'],
-        'ignore_exceptions' => false,
-    ],
-],
-```
-
-Set as default:
+### 2. Set as Default Log Channel
 
 ```env
 LOG_CHANNEL=remote
 ```
+
+The `remote` channel is auto-registered by the package. No need to edit `config/logging.php`.
 
 ### 3. Queue Setup (for async logging)
 
