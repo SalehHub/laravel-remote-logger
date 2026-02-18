@@ -24,7 +24,35 @@ class SendLogToRemoteServer implements ShouldQueue
         protected ?string $apiKey = null,
         protected bool $verifySsl = true,
         protected int $httpTimeout = 5,
-    ) {}
+    ) {
+        $this->data = $this->sanitizeData($data);
+    }
+
+    /**
+     * Sanitize data to remove non-serializable values like Closures.
+     */
+    protected function sanitizeData(mixed $data): mixed
+    {
+        if ($data instanceof \Closure) {
+            return '[Closure]';
+        }
+
+        if (is_object($data)) {
+            // Try to convert object to array, but if it contains closures,
+            // they'll be handled recursively
+            $data = (array) $data;
+        }
+
+        if (is_array($data)) {
+            $sanitized = [];
+            foreach ($data as $key => $value) {
+                $sanitized[$key] = $this->sanitizeData($value);
+            }
+            return $sanitized;
+        }
+
+        return $data;
+    }
 
     public function handle(): void
     {
