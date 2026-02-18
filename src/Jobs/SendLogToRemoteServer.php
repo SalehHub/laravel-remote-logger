@@ -30,23 +30,32 @@ class SendLogToRemoteServer implements ShouldQueue
 
     /**
      * Sanitize data to remove non-serializable values like Closures.
+     *
+     * @param mixed $data
+     * @param array $seenObjects
+     * @return mixed
      */
-    protected function sanitizeData(mixed $data): mixed
+    protected function sanitizeData($data, &$seenObjects = [])
     {
         if ($data instanceof \Closure) {
             return '[Closure]';
         }
 
         if (is_object($data)) {
-            // Try to convert object to array, but if it contains closures,
-            // they'll be handled recursively
+            $objId = spl_object_id($data);
+            if (isset($seenObjects[$objId])) {
+                return '[Circular Reference]';
+            }
+            $seenObjects[$objId] = true;
+            
+            // Convert object to array for processing
             $data = (array) $data;
         }
 
         if (is_array($data)) {
             $sanitized = [];
             foreach ($data as $key => $value) {
-                $sanitized[$key] = $this->sanitizeData($value);
+                $sanitized[$key] = $this->sanitizeData($value, $seenObjects);
             }
             return $sanitized;
         }
