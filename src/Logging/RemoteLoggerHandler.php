@@ -41,8 +41,8 @@ class RemoteLoggerHandler extends AbstractProcessingHandler
                 'environment' => config('app.env', 'production'),
                 'level' => strtolower($record->level->name),
                 'message' => $record->message,
-                'context' => $record->context,
-                'extra' => $record->extra,
+                'context' => $this->sanitizeData($record->context),
+                'extra' => $this->sanitizeData($record->extra),
                 'logged_at' => $record->datetime->format('Y-m-d H:i:s'),
             ];
 
@@ -73,5 +73,40 @@ class RemoteLoggerHandler extends AbstractProcessingHandler
         }
 
         $request->post($this->url, $data);
+    }
+
+    /**
+     * Recursively sanitize data to remove non-serializable values (Closures, resources, etc.).
+     */
+    protected function sanitizeData(mixed $data): mixed
+    {
+        if (is_array($data)) {
+            $sanitized = [];
+            foreach ($data as $key => $value) {
+                $sanitized[$key] = $this->sanitizeData($value);
+            }
+
+            return $sanitized;
+        }
+
+        if ($data instanceof \Closure) {
+            return '[Closure]';
+        }
+
+        if (is_resource($data)) {
+            return '[Resource: '.get_resource_type($data).']';
+        }
+
+        if (is_object($data)) {
+            try {
+                serialize($data);
+
+                return $data;
+            } catch (\Throwable) {
+                return '[Unserializable: '.get_class($data).']';
+            }
+        }
+
+        return $data;
     }
 }
