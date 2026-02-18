@@ -97,6 +97,16 @@ class RemoteLoggerHandler extends AbstractProcessingHandler
             return '[Resource: '.get_resource_type($data).']';
         }
 
+        if ($data instanceof \Throwable) {
+            return [
+                'class' => get_class($data),
+                'message' => $data->getMessage(),
+                'code' => $data->getCode(),
+                'file' => $data->getFile(),
+                'line' => $data->getLine(),
+            ];
+        }
+
         if (is_object($data)) {
             try {
                 serialize($data);
