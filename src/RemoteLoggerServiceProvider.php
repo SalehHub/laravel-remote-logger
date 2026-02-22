@@ -3,6 +3,7 @@
 namespace RemoteLogger;
 
 use Illuminate\Support\ServiceProvider;
+use RemoteLogger\RemoteLogger;
 
 class RemoteLoggerServiceProvider extends ServiceProvider
 {
@@ -11,6 +12,10 @@ class RemoteLoggerServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/config/remote-logger.php', 'remote-logger'
         );
+
+        $this->app->singleton('remote-logger-global', function () {
+            return new RemoteLogger;
+        });
 
         $this->app['config']->set('logging.channels.remote', array_merge(
             ['driver' => 'remote'],

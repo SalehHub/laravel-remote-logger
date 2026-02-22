@@ -61,10 +61,27 @@ php artisan queue:work
 ```php
 use Illuminate\Support\Facades\Log;
 
-Log::info('User logged in', ['user_id' => 123]);
-Log::error('Payment failed', ['order_id' => 456]);
-Log::warning('High memory usage detected');
+Log::info('User logged in', ['user_id' => 123, 'category' => 'Auth', 'subcategory' => 'Login']);
+Log::error('Payment failed', ['order_id' => 456, 'category' => 'Payments', 'subcategory' => 'Stripe']);
+Log::warning('High memory usage detected', ['category' => 'System']);
 ```
+
+### Global Context (Optional)
+
+You can set a global category or subcategory that applies to all logs in the current request or job. This is useful for assigning a broad category to an entire request cycle.
+
+```php
+use RemoteLogger\Facades\RemoteLogger;
+
+// At the beginning of a request or job
+RemoteLogger::setContext('Billing', 'StripeProvider');
+
+// Or separately
+RemoteLogger::setCategory('Billing');
+RemoteLogger::setSubcategory('StripeProvider');
+```
+
+Global settings (via `RemoteLogger` facade) will always take precedence over values provided in the log context.
 
 ## Remote Server Payload
 
@@ -76,8 +93,9 @@ Your server should accept POST requests with this JSON structure:
     "environment": "production",
     "level": "info",
     "message": "User logged in",
+    "category": "Auth",
+    "subcategory": "Login",
     "context": {"user_id": 123},
-    "extra": {},
     "logged_at": "2024-02-08 10:30:00"
 }
 ```

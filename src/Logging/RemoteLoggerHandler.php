@@ -36,13 +36,20 @@ class RemoteLoggerHandler extends AbstractProcessingHandler
     protected function write(LogRecord $record): void
     {
         try {
+            $context = $record->context;
+            $category = \RemoteLogger\RemoteLogger::getCategory() ?? ($context['category'] ?? null);
+            $subcategory = \RemoteLogger\RemoteLogger::getSubcategory() ?? ($context['subcategory'] ?? null);
+
+            unset($context['category'], $context['subcategory']);
+
             $data = [
                 'application' => $this->application,
                 'environment' => config('app.env', 'production'),
                 'level' => strtolower($record->level->name),
                 'message' => $record->message,
-                'context' => $this->sanitizeData($record->context),
-                'extra' => $this->sanitizeData($record->extra),
+                'category' => $category,
+                'subcategory' => $subcategory,
+                'context' => $this->sanitizeData($context),
                 'logged_at' => $record->datetime->format('Y-m-d H:i:s'),
             ];
 
