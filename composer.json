@@ -12,9 +12,9 @@
     ],
     "require": {
         "php": "^8.5",
-        "illuminate/support": "^10.0|^11.0|^12.65",
-        "illuminate/http": "^10.0|^11.0|^12.65",
-        "illuminate/queue": "^10.0|^11.0|^12.65",
+        "illuminate/support": "^10.0|^11.0|^12.65|^13.0",
+        "illuminate/http": "^10.0|^11.0|^12.65|^13.0",
+        "illuminate/queue": "^10.0|^11.0|^12.65|^13.0",
         "monolog/monolog": "^3.10"
     },
     "autoload": {
