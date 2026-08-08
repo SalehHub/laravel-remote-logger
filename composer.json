@@ -17,10 +17,26 @@
         "illuminate/queue": "^10.0|^11.0|^12.65|^13.0",
         "monolog/monolog": "^3.10"
     },
+    "require-dev": {
+        "orchestra/testbench": "^11.1",
+        "phpunit/phpunit": "^13.0"
+    },
     "autoload": {
         "psr-4": {
             "RemoteLogger\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "RemoteLogger\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:coverage": [
+            "@php -d xdebug.mode=coverage vendor/bin/phpunit --coverage-clover=build/coverage.xml --coverage-text",
+            "@php tests/check-coverage.php build/coverage.xml 100"
+        ]
     },
     "extra": {
         "laravel": {
