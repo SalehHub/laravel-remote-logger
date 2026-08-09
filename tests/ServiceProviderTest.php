@@ -32,6 +32,7 @@ class ServiceProviderTest extends TestCase
             'http://localhost:8000/api/logs',
             $app['config']->get('remote-logger.url'),
         );
+        $this->assertFalse($app['config']->get('remote-logger.async'));
         $this->assertInstanceOf(RemoteLogger::class, $app->make('remote-logger-global'));
         $this->assertSame(
             $app->make('remote-logger-global'),

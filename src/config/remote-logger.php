@@ -49,11 +49,11 @@ return [
     | Async Logging
     |--------------------------------------------------------------------------
     |
-    | When true, logs will be queued and sent asynchronously to avoid
-    | slowing down your application. Requires queue configuration.
+    | When true, logs will be queued and sent asynchronously. Synchronous
+    | delivery is the default and does not require a queue worker.
     |
     */
-    'async' => env('REMOTE_LOGGER_ASYNC', true),
+    'async' => env('REMOTE_LOGGER_ASYNC', false),
 
     /*
     |--------------------------------------------------------------------------

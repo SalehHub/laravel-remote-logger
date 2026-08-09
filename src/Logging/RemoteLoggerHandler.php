@@ -27,7 +27,7 @@ class RemoteLoggerHandler extends AbstractProcessingHandler
         $this->url = $config['url'] ?? config('remote-logger.url');
         $this->application = $config['application'] ?? config('remote-logger.application');
         $this->apiKey = $config['api_key'] ?? config('remote-logger.api_key');
-        $this->async = $config['async'] ?? config('remote-logger.async', true);
+        $this->async = $config['async'] ?? config('remote-logger.async', false);
         $this->queue = $config['queue'] ?? config('remote-logger.queue');
         $this->verifySsl = $config['verify_ssl'] ?? config('remote-logger.verify_ssl', true);
         $this->timeout = $config['timeout'] ?? config('remote-logger.timeout', 5);

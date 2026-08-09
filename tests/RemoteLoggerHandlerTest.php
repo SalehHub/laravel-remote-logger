@@ -118,7 +118,6 @@ class RemoteLoggerHandlerTest extends TestCase
             'application' => 'defaults-app',
             'api_key' => null,
             'level' => 'error',
-            'async' => false,
             'queue' => null,
             'verify_ssl' => true,
             'timeout' => 3,
@@ -129,7 +128,11 @@ class RemoteLoggerHandlerTest extends TestCase
         });
 
         $logger = new Logger('defaults');
-        $logger->pushHandler(new RemoteLoggerHandler([]));
+        $handler = new RemoteLoggerHandler([]);
+
+        $this->assertFalse($this->property($handler, 'async'));
+
+        $logger->pushHandler($handler);
 
         $logger->error('This must not escape');
 

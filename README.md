@@ -6,7 +6,7 @@ Send your Laravel application logs to a centralized remote logging server.
 
 - Zero config — just install, set env vars, and go
 - Bearer token authentication
-- Asynchronous logging (queued) to avoid slowing down requests
+- Synchronous logging by default, with optional queued delivery
 - Automatic retry on failure (3 attempts with backoff)
 - Configurable timeout and SSL verification
 - Fallback to local logging on failure
@@ -37,7 +37,7 @@ All available environment variables:
 | `REMOTE_LOGGER_API_KEY` | `null` | Bearer token for authentication |
 | `REMOTE_LOGGER_APP_NAME` | `APP_NAME` | Application identifier |
 | `REMOTE_LOGGER_LEVEL` | `debug` | Minimum log level to send |
-| `REMOTE_LOGGER_ASYNC` | `true` | Send logs via queue |
+| `REMOTE_LOGGER_ASYNC` | `false` | Send logs via queue when enabled |
 | `REMOTE_LOGGER_QUEUE` | `null` | Queue name (null = default queue) |
 | `REMOTE_LOGGER_VERIFY_SSL` | `true` | Verify SSL certificates |
 | `REMOTE_LOGGER_TIMEOUT` | `5` | HTTP request timeout in seconds |
@@ -50,7 +50,13 @@ LOG_CHANNEL=remote
 
 The `remote` channel is auto-registered by the package. No need to edit `config/logging.php`.
 
-### 3. Queue Setup (for async logging)
+### 3. Enable Queued Logging (Optional)
+
+Set asynchronous delivery explicitly and run a queue worker:
+
+```env
+REMOTE_LOGGER_ASYNC=true
+```
 
 ```bash
 php artisan queue:work
@@ -110,7 +116,7 @@ php artisan vendor:publish --tag=remote-logger-config
 
 ## Synchronous Mode
 
-Set `REMOTE_LOGGER_ASYNC=false` to send logs synchronously (not recommended for production).
+Synchronous delivery is enabled by default and does not require a queue worker.
 
 ## License
 
