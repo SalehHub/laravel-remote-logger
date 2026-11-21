@@ -28,10 +28,11 @@ jobs:
           echo "PHP_INI_SCAN_DIR=/opt/homebrew/etc/php/8.5/conf.d:$RUNNER_TEMP/laravel-remote-logger-php" \
             >> "$GITHUB_ENV"
           {
-            echo "/opt/homebrew/opt/php@8.5/bin"
-            echo "/opt/homebrew/opt/php@8.5/sbin"
             echo "/opt/homebrew/bin"
             echo "$HOME/.local/bin"
+            # GITHUB_PATH puts later lines first: PHP 8.5 must come after /opt/homebrew/bin (default php is 8.6).
+            echo "/opt/homebrew/opt/php@8.5/sbin"
+            echo "/opt/homebrew/opt/php@8.5/bin"
           } >> "$GITHUB_PATH"
 
       - name: Verify native toolchain
